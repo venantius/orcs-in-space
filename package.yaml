@@ -24,6 +24,7 @@ dependencies:
 - brick
 - text
 - vty
+- random
 
 library:
   source-dirs: src

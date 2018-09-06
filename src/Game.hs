@@ -8,7 +8,9 @@ module Game
     ) where
 
 import Brick
-import Unit (Coord(..), Direction(..), Unit, createOrc, move, position)
+import Grid.Coord (Coord(..))
+import Units.Core (Direction(..), Unit, move, position)
+import Units.Orc (createOrc)
 
 import qualified Brick.Widgets.Border as B
 import qualified Brick.Widgets.Border.Style as BS
@@ -59,7 +61,7 @@ handleEvent g (VtyEvent (V.EvKey V.KRight [])) = continue $ turn East g
 handleEvent g (VtyEvent (V.EvKey V.KLeft [])) = continue $ turn West g
 handleEvent g _ = continue g
 
-turn :: Unit.Direction -> Game -> Game
+turn :: Units.Core.Direction -> Game -> Game
 turn d g = g {units = [move d u | u <- units g]}
 
 -- Drawing

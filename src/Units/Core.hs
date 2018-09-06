@@ -1,4 +1,6 @@
-module Unit where
+module Units.Core where
+
+import Grid.Coord
 
 data Bolter
 
@@ -23,12 +25,6 @@ data Race
     | SpaceMarine
     deriving (Show)
 
-data Coord
-    = Coord { x :: Int
-            , y :: Int }
-    | Int Int
-    deriving (Show, Eq)
-
 data Unit = Unit
     { race :: Race
     , totalHitPoints :: Int
@@ -36,16 +32,6 @@ data Unit = Unit
     , weapon :: Weapon
     , position :: Coord
     } deriving (Show)
-
-createOrc :: Unit
-createOrc =
-    Unit
-        { race = Orc
-        , totalHitPoints = 50
-        , currentHitPoints = 50
-        , weapon = Weapon Beam 10
-        , position = Coord 10 10
-        }
 
 shoot :: Unit -> Unit -> Unit
 shoot (Unit _ _ _ (Weapon t d) _) (Unit r thp c w pos) =
