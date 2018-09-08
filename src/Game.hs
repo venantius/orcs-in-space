@@ -10,7 +10,10 @@ module Game
 import Brick
 import Grid.Coord (Coord(..))
 import Units.Core (Direction(..), Unit, move, position)
-import Units.Orc (createOrc)
+import Units.Orc (createOrc, moveRandomly)
+
+import Control.Monad.IO.Class (liftIO)
+import System.Random (Random, RandomGen, StdGen(..), newStdGen)
 
 import qualified Brick.Widgets.Border as B
 import qualified Brick.Widgets.Border.Style as BS
@@ -19,10 +22,10 @@ import qualified Graphics.Vty as V
 
 -- I might ditch both of these later
 height :: Int
-height = 20
+height = 40
 
 width :: Int
-width = 20
+width = 80
 
 data Tick =
     Tick
@@ -31,16 +34,14 @@ data Tick =
 type Name = ()
 
 data Game = Game
-    { units :: [Unit]
+    { seed :: StdGen
+    , units :: [Unit]
     } deriving (Show)
 
 initGame :: IO Game
 initGame = do
-    return Game {units = [createOrc]}
-
--- TODO
-step :: Game -> Game
-step g = g
+    seed <- newStdGen
+    return Game {seed = seed, units = [createOrc]}
 
 app :: App Game Tick Name
 app =
@@ -54,12 +55,35 @@ app =
 
 -- Handling events
 handleEvent :: Game -> BrickEvent Name Tick -> EventM Name (Next Game)
+handleEvent g (AppEvent Tick) = step g
 handleEvent g (VtyEvent (V.EvKey (V.KChar 'q') [])) = halt g
 handleEvent g (VtyEvent (V.EvKey V.KUp [])) = continue $ turn North g
 handleEvent g (VtyEvent (V.EvKey V.KDown [])) = continue $ turn South g
 handleEvent g (VtyEvent (V.EvKey V.KRight [])) = continue $ turn East g
 handleEvent g (VtyEvent (V.EvKey V.KLeft [])) = continue $ turn West g
 handleEvent g _ = continue g
+
+-- TODO
+step :: Game -> EventM Name (Next Game)
+step g = do
+    u <- liftIO $ recursiveUnitAIMove (units g)
+    continue $ g {units = u}
+
+ioUnit :: [Unit] -> IO [Unit]
+ioUnit u = return u
+
+-- Update each unit with a move, decrement i, recurse
+recursiveUnitAIMove :: [Unit] -> IO [Unit]
+recursiveUnitAIMove [] = return []
+recursiveUnitAIMove [u] = do
+    seed <- newStdGen
+    let movedU = moveRandomly u seed -- update the first unit with a random move
+    return [movedU]
+recursiveUnitAIMove (u:us) = do
+    seed <- newStdGen
+    let movedU = moveRandomly u seed -- update the first unit with a random move
+    movedUs <- recursiveUnitAIMove us -- update the remaining units with a new seed
+    return $ movedUs ++ [movedU]
 
 turn :: Units.Core.Direction -> Game -> Game
 turn d g = g {units = [move d u | u <- units g]}

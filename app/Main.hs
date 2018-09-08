@@ -13,6 +13,6 @@ main = do
     forkIO $
         forever $ do
             writeBChan chan Tick
-            threadDelay 100000 -- how fast the game moves
+            threadDelay 400000 -- how fast the game moves
     g <- initGame
     void $ customMain (V.mkVty V.defaultConfig) (Just chan) app g

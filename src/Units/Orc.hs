@@ -15,8 +15,8 @@ createOrc =
         , position = Coord 10 10
         }
 
-moveRandomly :: Unit -> Unit
-moveRandomly u = do
-    i <- getStdRandom $ randomR (0, 3)
-    let dir = [North, South, East, West] !! i
-    move dir u
+moveRandomly :: Unit -> StdGen -> Unit
+moveRandomly u rng = do
+    let i = fst $ randomR (0, 3) rng
+    let d = [North, South, East, West] !! i
+    move d u
