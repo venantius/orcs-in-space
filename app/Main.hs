@@ -1,11 +1,14 @@
 module Main where
 
-import Brick (customMain)
-import Brick.BChan (newBChan, writeBChan)
 import Control.Concurrent (forkIO, threadDelay)
 import Control.Monad (forever, void)
-import Game (Tick(..), app, initGame)
+
+import Brick (customMain)
+import Brick.BChan (newBChan, writeBChan)
 import qualified Graphics.Vty as V
+
+import Game (initGame)
+import UI (Tick(..), app)
 
 main :: IO ()
 main = do

@@ -14,3 +14,13 @@ Don't forget that for some reason ghc-mod can't be installed with anything newer
 # Maybe hindent as well?
 stack build --copy-compiler-tool ghc-mod hoogle weeder
 ```
+
+## Playing
+
+O = An Orc. Green, stupid, and probably hungry.
+S = A space marine. Trigger-happy. Avoid.
+M = A door. Can you trust it? It's a door.
+
+## Winning
+
+What does winning mean, really?

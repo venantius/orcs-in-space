@@ -16,14 +16,10 @@ data Weapon = Weapon
     , damage :: Int
     } deriving (Show)
 
-data Orc
-
-data SpaceMarine
-
 data Race
     = Orc
     | SpaceMarine
-    deriving (Show)
+    deriving (Show, Eq)
 
 data Unit = Unit
     { race :: Race
